@@ -182,3 +182,7 @@ lib/generated_plugin_registrant.dart
 
 *.env
 !*.sample.env
+
+*.g.dart
+
+http-client.private.env.json
