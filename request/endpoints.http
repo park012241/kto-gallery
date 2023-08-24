@@ -1,0 +1,10 @@
+### Gallery List
+# @no-cookie-jar
+GET {{base}}/galleryList1?
+    serviceKey={{serviceKey}}&
+    numOfRows=10&
+    pageNo=1&
+    MobileOS=ETC&
+    MobileApp=AppTest&
+    arrange=A&
+    _type=json

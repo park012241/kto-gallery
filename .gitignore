@@ -118,14 +118,7 @@ fabric.properties
 
 ### Flutter template
 # Flutter/Dart/Pub related
-**/doc/api/
-.dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
 .fvm/flutter_sdk
-.packages
-.pub-cache/
-.pub/
 build/
 coverage/
 lib/generated_plugin_registrant.dart
@@ -161,7 +154,6 @@ lib/generated_plugin_registrant.dart
 **/ios/**/profile
 **/ios/**/xcuserdata
 **/ios/.generated/
-**/ios/Flutter/.last_build_id
 **/ios/Flutter/App.framework
 **/ios/Flutter/Flutter.framework
 **/ios/Flutter/Flutter.podspec
@@ -182,3 +174,8 @@ lib/generated_plugin_registrant.dart
 
 *.env
 !*.sample.env
+
+*.g.dart
+*.freezed.dart
+
+http-client.private.env.json
