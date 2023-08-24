@@ -1,16 +1,9 @@
-# kto_gallery
+# KTO Gallery
 
-A new Flutter project.
+* [한국관광공사의 관광 사진 정보 API](https://www.data.go.kr/data/15101914/openapi.do)를 이용한 Gallery입니다.
 
-## Getting Started
+## 직접 실행하기
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. `.sample.env`파일을 복사하여 `.env` 파일로 저장합니다.
+2. `.env` 파일의 Encoded API Key의 값을 발급 받은 API 키로 수정해 줍니다.
+3. `flutter run`을 실행하여 빌드하고 실행합니다.
