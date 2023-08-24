@@ -1,15 +1,18 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:kto_gallery/providers/gallery_list.dart';
 
+import 'models/gallery_list.dart';
 import 'providers/environments.dart';
 
 Future<void> main() async {
   await dotenv.load(
-    fileName: ".env",
+    fileName: '.env',
     mergeWith: Platform.environment,
   );
 
@@ -64,12 +67,21 @@ class MyHomePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var counter = useState(0);
-    var incrementCounter = useCallback(() {
+    final query = useMemoized(() => const GalleryListQuery(page: 1), []);
+    final items = ref.watch(getItemsProvider(query));
+
+    final counter = useState(0);
+    final incrementCounter = useCallback(() {
       counter.value++;
     });
 
-    var operatingSystemCode = ref.watch(operatingSystemCodeProvider);
+    items.whenData((value) {
+      if (kDebugMode) {
+        print(value.first);
+      }
+    });
+
+    final operatingSystemCode = ref.watch(operatingSystemCodeProvider);
 
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.

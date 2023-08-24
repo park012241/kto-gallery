@@ -39,7 +39,7 @@ class GalleryListBody with _$GalleryListBody {
 @freezed
 class GalleryListItems with _$GalleryListItems {
   const factory GalleryListItems({
-    @JsonKey(name: 'item') required GalleryListItem item,
+    @JsonKey(name: 'item') required Iterable<GalleryListItem> item,
   }) = _GalleryListItems;
 
   factory GalleryListItems.fromJson(Map<String, Object?> json) =>
@@ -71,7 +71,7 @@ class GalleryListResponse with _$GalleryListResponse {
 @freezed
 class GalleryListPayload with _$GalleryListPayload {
   const factory GalleryListPayload({
-    @JsonKey(name: 'response') required GalleryListResponse header,
+    @JsonKey(name: 'response') required GalleryListResponse response,
   }) = _GalleryListPayload;
 
   factory GalleryListPayload.fromJson(Map<String, Object?> json) =>
