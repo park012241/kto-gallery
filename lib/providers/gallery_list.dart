@@ -47,24 +47,19 @@ Future<GalleryListPayload> _getPayload(
 
   final uri = builder.build();
 
-  final response = await http.get(uri);
-
-  final payload = GalleryListPayload.fromJson(
-    jsonDecode(utf8.decode(response.bodyBytes)),
+  final response = await http.get(
+    uri,
+    headers: {'Accept': 'application/json'},
   );
+
+  final body = utf8.decode(response.bodyBytes);
+
+  final payload = GalleryListPayload.fromJson(jsonDecode(body));
 
   return payload;
 }
 
-@Riverpod(
-  keepAlive: false,
-  dependencies: [
-    basePath,
-    operatingSystemCode,
-    appName,
-    serviceKey,
-  ],
-)
+@Riverpod(keepAlive: false, dependencies: [_getPayload])
 Future<Iterable<GalleryListItem>> getItems(
   GetItemsRef ref,
   GalleryListQuery query,
