@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -5,19 +6,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:kto_gallery/providers/gallery_list.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'models/gallery_list.dart';
 import 'providers/environments.dart';
+import 'providers/gallery_list.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   await dotenv.load(
     fileName: '.env',
     mergeWith: Platform.environment,
   );
 
+  if (kDebugMode) {
+    await WakelockPlus.enable();
+  }
+
   runApp(const ProviderScope(child: MyApp()));
 }
+
+const _seedColor = Colors.deepPurple;
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -28,22 +38,19 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a blue toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        brightness: Brightness.light,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: _seedColor,
+          brightness: Brightness.light,
+        ),
+        useMaterial3: true,
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: _seedColor,
+          brightness: Brightness.dark,
+        ),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
@@ -106,6 +113,11 @@ class MyHomePage extends HookConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text('Current OS Code: $operatingSystemCode'),
+            Text('First Item Title: ${items.when(
+              data: (data) => data.first.title,
+              error: (error, trace) => 'Error: ${error.toString()}',
+              loading: () => 'Loading...',
+            )}'),
             const Text(
               'You have pushed the button this many times:',
             ),
