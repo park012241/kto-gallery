@@ -1,10 +1,8 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:kto_gallery/models/gallery_list.dart';
-import 'package:kto_gallery/providers/environments.dart';
 import 'package:kto_gallery/providers/gallery_list.dart';
 
 @RoutePage<void>()
@@ -15,65 +13,96 @@ class HomePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final query = useMemoized(() => const GalleryListQuery(page: 1), []);
+    // TODO: Check current page is last page
+    // TODO: Add error handling
+    // TODO: Add loading indicator
+    // TODO: Add refresh feature
+    final page = useState<int>(1);
+
+    final query = useMemoized(
+      () => GalleryListQuery(
+        page: page.value,
+        rows: 20,
+      ),
+      [page.value],
+    );
+    final itemList = useState<List<GalleryListItem>>([]);
     final items = ref.watch(getItemsProvider(query));
 
-    final counter = useState(0);
-    final incrementCounter = useCallback(() {
-      counter.value++;
+    final scrollController = useScrollController();
+
+    items.whenData((data) {
+      itemList.value = [...itemList.value, ...data];
     });
 
-    items.whenData((value) {
-      if (kDebugMode) {
-        print(value.first);
+    useEffect(() {
+      final controller = scrollController;
+
+      void callback() {
+        if (controller.position.pixels == controller.position.maxScrollExtent) {
+          page.value++;
+        }
       }
-    });
 
-    final operatingSystemCode = ref.watch(operatingSystemCodeProvider);
+      controller.addListener(callback);
 
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+      return () {
+        controller.removeListener(callback);
+      };
+    }, [scrollController]);
+
+    final goToTopCallback = useCallback(() async {
+      await scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+      itemList.value = [];
+      page.value = 1;
+    }, []);
+
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: const Text('Title'),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text('Current OS Code: $operatingSystemCode'),
-            Text('First Item Title: ${items.when(
-              data: (data) => data.first.title,
-              error: (error, trace) => 'Error: ${error.toString()}',
-              loading: () => 'Loading...',
-            )}'),
-            const Text(
-              'You have pushed the button this many times:',
+      body: CustomScrollView(
+        controller: scrollController,
+        slivers: [
+          SliverAppBar(
+            // TRY THIS: Try changing the color here to a specific color (to
+            // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
+            // change color while the other colors stay the same.
+            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+            // Here we take the value from the MyHomePage object that was created by
+            // the App.build method, and use it to set our appbar title.
+            title: const Text('Title'),
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                return ListTile(
+                  title: Text(itemList.value[index].title),
+                );
+              },
+              childCount: itemList.value.length,
             ),
-            Text(
-              '${counter.value}',
-              style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          const SliverPadding(
+            padding: EdgeInsets.all(16),
+            sliver: SliverToBoxAdapter(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+        onPressed: goToTopCallback,
+        tooltip: 'Go To Top',
+        child: const Icon(Icons.arrow_upward),
+      ),
     );
   }
 }
