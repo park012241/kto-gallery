@@ -2,8 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:kto_gallery/models/gallery_list.dart';
-import 'package:kto_gallery/providers/gallery_list.dart';
+
+import '../models/models.dart';
+import '../providers/providers.dart';
+import '../widgets/widgets.dart';
 
 @RoutePage<void>()
 class HomePage extends HookConsumerWidget {
@@ -66,22 +68,26 @@ class HomePage extends HookConsumerWidget {
         controller: scrollController,
         slivers: [
           SliverAppBar(
-            // TRY THIS: Try changing the color here to a specific color (to
-            // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-            // change color while the other colors stay the same.
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            // Here we take the value from the MyHomePage object that was created by
-            // the App.build method, and use it to set our appbar title.
-            title: const Text('Title'),
+            title: const Text('KTO Gallery'),
           ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                return ListTile(
-                  title: Text(itemList.value[index].title),
-                );
-              },
-              childCount: itemList.value.length,
+          SliverPadding(
+            padding: const EdgeInsets.all(4),
+            sliver: SliverGrid(
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 200.0,
+                mainAxisSpacing: 0.0,
+                crossAxisSpacing: 0.0,
+                childAspectRatio: 0.75,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  return RepaintBoundary(
+                    child: GalleryCard(item: itemList.value[index]),
+                  );
+                },
+                childCount: itemList.value.length,
+              ),
             ),
           ),
           const SliverPadding(

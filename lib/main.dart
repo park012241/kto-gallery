@@ -4,9 +4,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:kto_gallery/app_router.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
+import 'app_router.dart';
 import 'constants/constants.dart';
 
 Future<void> main() async {

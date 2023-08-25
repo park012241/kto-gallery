@@ -1,12 +1,11 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:kto_gallery/models/gallery_list.dart';
-import 'package:kto_gallery/models/json_models/json_models.dart'
-    hide GalleryListItem;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uri/uri.dart';
 
+import '../models/gallery_list.dart';
+import '../models/json_models/json_models.dart' hide GalleryListItem;
 import 'environments.dart';
 
 part 'gallery_list.g.dart';
