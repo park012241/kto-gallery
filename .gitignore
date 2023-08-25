@@ -176,6 +176,7 @@ lib/generated_plugin_registrant.dart
 !*.sample.env
 
 *.g.dart
+*.gr.dart
 *.freezed.dart
 
 http-client.private.env.json
