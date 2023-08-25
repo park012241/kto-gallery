@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -8,26 +7,34 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
+import 'constants/constants.dart';
 import 'models/gallery_list.dart';
 import 'providers/environments.dart';
 import 'providers/gallery_list.dart';
 
 Future<void> main() async {
+  /// Initialize Widget binding for wakelock
   WidgetsFlutterBinding.ensureInitialized();
 
+  /// Load .env file
   await dotenv.load(
     fileName: '.env',
     mergeWith: Platform.environment,
   );
 
+  /// Disable sleep for debug only
   if (kDebugMode) {
     await WakelockPlus.enable();
   }
 
-  runApp(const ProviderScope(child: MyApp()));
+  /// Finally run app
+  runApp(
+    UncontrolledProviderScope(
+      container: container,
+      child: const MyApp(),
+    ),
+  );
 }
-
-const _seedColor = Colors.deepPurple;
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -40,7 +47,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.light,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: _seedColor,
+          seedColor: seedColor,
           brightness: Brightness.light,
         ),
         useMaterial3: true,
@@ -48,7 +55,7 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         brightness: Brightness.dark,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: _seedColor,
+          seedColor: seedColor,
           brightness: Brightness.dark,
         ),
         useMaterial3: true,
