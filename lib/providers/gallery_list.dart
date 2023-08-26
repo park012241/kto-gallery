@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:uri/uri.dart';
 
@@ -17,6 +16,7 @@ part 'gallery_list.g.dart';
     operatingSystemCode,
     appName,
     serviceKey,
+    httpClient,
   ],
 )
 Future<GalleryListPayload> _getPayload(
@@ -28,6 +28,8 @@ Future<GalleryListPayload> _getPayload(
   final serviceKey = ref.watch(serviceKeyProvider);
 
   final baseUrl = ref.watch(basePathProvider);
+  final httpClient = ref.watch(httpClientProvider);
+
   const endpoint = 'galleryList1';
 
   final apiUri = Uri.parse('$baseUrl/$endpoint');
@@ -46,14 +48,14 @@ Future<GalleryListPayload> _getPayload(
 
   final uri = builder.build();
 
-  final response = await http.get(
-    uri,
-    headers: {'Accept': 'application/json'},
-  );
+  final request = await httpClient.getUrl(uri);
+  request.headers.add('Accept', 'application/json');
 
-  final body = utf8.decode(response.bodyBytes);
+  final response = await request.close();
 
-  final payload = GalleryListPayload.fromJson(jsonDecode(body));
+  final stringData = await response.transform(utf8.decoder).join();
+
+  final payload = GalleryListPayload.fromJson(jsonDecode(stringData));
 
   return payload;
 }
