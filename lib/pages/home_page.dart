@@ -76,8 +76,8 @@ class HomePage extends HookConsumerWidget {
             sliver: SliverGrid(
               gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: 200.0,
-                mainAxisSpacing: 0.0,
-                crossAxisSpacing: 0.0,
+                mainAxisSpacing: 4.0,
+                crossAxisSpacing: 4.0,
                 childAspectRatio: 0.75,
               ),
               delegate: SliverChildBuilderDelegate(
