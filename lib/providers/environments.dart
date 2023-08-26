@@ -11,6 +11,13 @@ const String _android = 'AND';
 const String _ios = 'IOS';
 
 @Riverpod(keepAlive: true, dependencies: [])
+HttpClient httpClient(HttpClientRef ref) {
+  final client = HttpClient();
+
+  return client;
+}
+
+@Riverpod(keepAlive: true, dependencies: [])
 String operatingSystemCode(OperatingSystemCodeRef ref) {
   return switch (kIsWeb) {
     true => _etc,
